@@ -1,14 +1,22 @@
+import { createApp } from 'vue'
 import { createStore } from 'vuex'
 
-export default createStore({
+
+const store = createStore({
   state: {
-  },
-  getters: {
+    saToken: ""
   },
   mutations: {
+    //获取Token
+    getSaToken(state, token) {
+      state.saToken = token
+      localStorage.token = token
+    },
+    //删除Token
+    delSaToken (state) {
+      state.saToken = ""
+      localStorage.removeItem('token')
+    }
   },
-  actions: {
-  },
-  modules: {
-  }
 })
+export  default store
