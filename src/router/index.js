@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import Login from '../views/Login.vue'
 import Logout from "@/components/logout/Logout.vue";
+import LoginFrom  from "@/components/loginFrom/LoginFrom.vue";
+import RegisterFrom from "@/components/register/RegisterFrom.vue";
 import UserFunc from '../hooks'
 
 // 获取登录状态
@@ -35,7 +37,19 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    children: [
+      {
+        path: '/loginFrom',
+        name: 'LoginFrom',
+        component: LoginFrom
+      },
+      {
+        path: '/registerFrom',
+        name: 'RegisterFrom',
+        component: RegisterFrom
+      }
+    ]
   },
   {
     path: '/logout',
@@ -61,8 +75,9 @@ const router = createRouter({
 // GOOD
 router.beforeEach((to, from, next) => {
     // 判断该路由是否需要登录权限
-    if(to.name !== 'login' && CheckLogin && to.meta.requiredAuth) {
-
+    if( !CheckLogin() && to.meta.requiredAuth) {
+      console.log(to.meta.requiredAuth)
+      console.log(CheckLogin())
       next({
         path: '/login',
         query: {redirect: to.fullPath}
@@ -70,7 +85,6 @@ router.beforeEach((to, from, next) => {
     } else {
       next()
     }
-
 })
 
 

@@ -16,6 +16,7 @@ function UserFunc() {
                 ElMessage.success('登录成功')
                 // 登录成功跳转
                 router.push('/home')
+                console.log(res.data)
                 //登录后存储Token
                 store.commit('getSaToken',res.data)
             }else{
@@ -70,14 +71,32 @@ function UserFunc() {
 
 
     //用户注册
+    async function User_register(user,pwd){
+        const res =  await Login.register(user,pwd).then((res)=>{
+            if (res.code === 200 ){
+                ElMessage.success('注册成功')
+                //注册成功跳转到login
+                router.push('/login')
+                console.log(res.data)
+            }else{
+                console.log(res)
+                ElMessage.error("注册失败！")
+            }
 
+        }).catch(err=>{
+            console.log(err)
+            ElMessage.error('注册失败,请联系管理员')
+        })
+
+    }
 
 
 
     return{
         User_login,
         CheckLogin,
-        User_logout
+        User_logout,
+        User_register
 
     }
 

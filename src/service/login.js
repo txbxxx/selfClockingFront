@@ -25,6 +25,20 @@ function login(user,pwd){
 // }
 
 
+//用户注册
+function register(user,pwd){
+    return request({
+        url: api.Demo.Register,
+        method: 'post',
+        data: {
+            username: user,
+            password: pwd
+        }
+    })
+}
+
+
+
 //  用户登出
 function logout(){
     return request({
@@ -37,5 +51,6 @@ export default {
     login,
     // checkLogin,
     logout,
+    register,
 
 }
