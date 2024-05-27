@@ -1,10 +1,16 @@
 <template>
-  <nav>
-    <router-link to="/login">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div>
+    <router-link to="/login"></router-link>
+    <router-view></router-view>
+  </div>
 </template>
+
+
+<script setup>
+// 导入Login界面，使用setup语法糖就不需要使用components属性了
+import Login from "./views/Login.vue"
+
+</script>
 
 <style lang="scss">
 #app {
@@ -15,16 +21,4 @@
   color: #2c3e50;
 }
 
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>
