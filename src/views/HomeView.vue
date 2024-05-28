@@ -2,7 +2,7 @@
   <nav>
 <!--    <router-link to="/logout">logout</router-link> |-->
     <router-link to="/logout" >logout</router-link>|
-    <router-link to="/login">login</router-link>
+    <router-link to="/login/loginFrom">login</router-link>
   </nav>
   <router-view/>
 </template>

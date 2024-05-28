@@ -7,10 +7,8 @@
         ref="ruleFormRef"
         style="max-width: 600px; height: 230px;"
         :model="ruleForm"
-        :rules="rules"
         label-width="auto"
         class="demo-ruleForm"
-        :size="formSize"
         status-icon
     >
       <div class="loginUser">

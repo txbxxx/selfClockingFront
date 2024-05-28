@@ -32,10 +32,10 @@ function UserFunc() {
     }
 
     //检查用户是否登录
-    async function CheckLogin(){
+    function CheckLogin(){
         const item = localStorage.getItem('token');
         console.log(item)
-        return item == null
+        return item != null
     }
 
 
@@ -50,7 +50,7 @@ function UserFunc() {
                     ElMessage.success('退出成功')
                     console.log(res)
                     // 退出成功跳转
-                    router.push('/login')
+                    router.push('/login/loginFrom')
                     //退出后清除Token
                     store.commit('delSaToken', null)
                 } else {
@@ -76,7 +76,7 @@ function UserFunc() {
             if (res.code === 200 ){
                 ElMessage.success('注册成功')
                 //注册成功跳转到login
-                router.push('/login')
+                router.push('/login/loginFrom')
                 console.log(res.data)
             }else{
                 console.log(res)
