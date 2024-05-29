@@ -100,13 +100,6 @@ const submitForm = async () => {
 }
 
 
-//重置表格
-const resetForm = () => {
-  if (ruleFormRef.value) {
-    // resetFields() 方法重置表单字段的值，它是在element-ui的form组件中定义的,
-    ruleFormRef.value.resetFields();
-  }
-}
 
 
 

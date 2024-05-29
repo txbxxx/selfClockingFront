@@ -2,7 +2,7 @@
   <div class="center-Page">
     <el-container>
       <el-container  >
-          <el-aside    :width="isCollapse?'70px':'200px'"  style="height: 700px;"  class="TaskPageAside">
+          <el-aside    :width="isCollapse?'70px':'200px'"  style="height: 100%;"  class="TaskPageAside">
             <el-space direction="vertical" :size="250 " >
 
               <Menu :isCollapse="isCollapse"  />

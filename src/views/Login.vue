@@ -70,7 +70,6 @@ function handleSelect(key, keyPath) {
 }
 
 .login{
-  //background-color: #252a36;
   background-image: url("../assets/b1.jpg");
   background-size: 100%;
   width: 100%;
