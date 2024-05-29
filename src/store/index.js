@@ -10,12 +10,12 @@ const store = createStore({
     //获取Token
     getSaToken(state, token) {
       state.saToken = token
-      localStorage.token = token
+      sessionStorage.token = token
     },
     //删除Token
     delSaToken (state) {
       state.saToken = ""
-      localStorage.removeItem('token')
+      sessionStorage.removeItem('token')
     }
   },
 })

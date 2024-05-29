@@ -33,7 +33,7 @@ function UserFunc() {
 
     //检查用户是否登录
     function CheckLogin(){
-        const item = localStorage.getItem('token');
+        const item = sessionStorage.getItem('token');
         console.log(item)
         return item != null
     }
@@ -91,12 +91,61 @@ function UserFunc() {
     }
 
 
+    //列出所有日程
+    async function UserSchedule_list() {
+        try {
+            // 获取当前用户登录的id
+            const user = await Login.getUserId();
+            if (!user) {
+                ElMessage.error("获取不到当前用户!!");
+                throw new Error("User not found");
+            }
+
+            // 查询用户日程
+            const res = await Login.listSchedule(user);
+
+            if (res.code === 200) {
+                return res.data; // 直接返回数组数据
+            } else {
+                ElMessage.error(res.data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            ElMessage.error('查询失败,请联系管理员');
+        }
+    }
+
+
+    //添加日程
+    async function UserSchedule_add(scheduleFiled,date){
+        //获取用户
+        const user = await Login.getUserId();
+        if (!user) {
+            ElMessage.error("获取不到当前用户!!");
+        }
+        // 添加日程
+        const res =  await Login.addSchedule(user,scheduleFiled,date).then((res)=>{
+            if (res.code === 200 ){
+                ElMessage.success('添加成功')
+                console.log(res.data)
+            }else{
+                console.log(res)
+                ElMessage.error("添加失败！")
+            }
+        }).catch(err=>{
+            console.log(err)
+            ElMessage.error('添加失败,请联系管理员')
+        })
+
+    }
 
     return{
         User_login,
         CheckLogin,
         User_logout,
-        User_register
+        User_register,
+        UserSchedule_list,
+        UserSchedule_add,
 
     }
 

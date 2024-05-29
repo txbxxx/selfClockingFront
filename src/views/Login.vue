@@ -95,6 +95,7 @@ function handleSelect(key, keyPath) {
 
 .el-menu.el-menu-demo:not(.el-menu--collapse) {
   border-bottom: none;
+  margin-left: 10px;
 }
 
 </style>

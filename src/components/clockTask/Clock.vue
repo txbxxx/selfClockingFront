@@ -3,9 +3,9 @@
     <template #date-cell="{ data }">
       <div :class="data.isSelected ? 'is-selected' : ''"  @click="dialogOpen(data.day)">
         <div>{{ data.day.split('-').slice(2).join('-') }}</div>
-        <div v-if="dateList.find(v => v.date === data.day)" style="font-size: 10px">
+        <div v-if="getDateItem(data.day)" style="font-size: 10px">
 
-          {{ dateList.find(v => v.date === data.day).text }}
+          {{ getDateItem(data.day).scheduleFiled}}
 
         </div>
       </div>
@@ -14,7 +14,7 @@
   <el-dialog v-model="dialogFormVisible" title="添加日程">
     <el-form :model="calendar">
       <el-form-item label="日程名" :label-width="100">
-        <el-input v-model="calendar.name" autocomplete="off" />
+        <el-input v-model="calendar.filed" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -32,29 +32,56 @@
 <script setup>
 import {reactive, ref} from 'vue'
 import { ElMessageBox } from 'element-plus'
+import UserFunc from "@/hooks";
+import { onMounted } from 'vue'
 
+// 获取用户日程接口
+const { UserSchedule_list , UserSchedule_add } = UserFunc()
+// 日程数据
 const dateList = ref([
-    {date: '2024-05-22', text: "打羽毛球"},
-    {date: "2024-05-23", text: "打羽毛球"},
-    {date: "2024-05-24", text: "打羽毛球"},
-    {date: "2024-05-25", text: "打羽毛球"},
-    ])
-
-const calendar = ref({})
+])
+// 表单数据
+const calendar = ref({
+  filed:'',
+  date:'',
+})
+// 弹窗设置false为关闭
 const dialogFormVisible = ref(false);
 
+// 添加一个方法来查找dateList中对应日期的项
+const getDateItem = (day) => {
+  return dateList.value.find(v => v.date === day);
+}
+
+// 检测是否打卡弹窗
 const dialogOpen = (date)  =>{
   dialogFormVisible.value = true;
-  calendar.value.date = {date: date}
-  console.log(date)
+  calendar.value = {date: date}
 }
+
+//获取日程数据
+const getSchedule = () => {
+  UserSchedule_list().then(res => {
+    console.log(res)
+    dateList.value = res
+    })
+}
+
+// 在页面加载时就获取数据
+onMounted(() => {
+  getSchedule()
+})
 
 
 
 
 //保存表单
 const saveSchedule = () => {
-
+  UserSchedule_add(calendar.value.filed,calendar.value.date).then(res => {
+    console.log(res)
+  })
+  dialogFormVisible.value = false;
+  getSchedule()
 }
 
 

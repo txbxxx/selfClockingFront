@@ -12,8 +12,9 @@ const axioss = axios.create({
 axioss.interceptors.request.use(
     (config) => {
         // 在发送请求之前做些什么，例如添加认证头
-        const token = localStorage.getItem('token');
+        const token = sessionStorage.getItem('token');
         if (token) {
+
             config.headers.Authorization = `Bearer ${token}`;
             config.headers.satoken = token
         }
