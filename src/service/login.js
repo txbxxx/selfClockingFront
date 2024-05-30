@@ -3,6 +3,7 @@ import { mapMutations } from 'vuex'
 import api from '../api'
 import * as Demo from "@/api/login";
 import {GetUserId, ListSchedule} from "@/api/login";
+import axios from "axios";
 
 
 // 登录方法
@@ -96,6 +97,25 @@ function addSchedule(user,scheduleFiled,date){
 }
 
 
+//用户删除日程
+function deleteSchedule(user,scheduleFiled,date){
+    return request({
+        url: api.Demo.DeleteSchedule,
+        method: 'delete',
+        data: {
+            username: user,
+            scheduleFiled: scheduleFiled,
+            date: date
+        }
+    })
+}
+
+
+// 名人名言
+function getMingYan(){
+    return axios.get('https://v.api.aa1.cn/api/api-wenan-mingrenmingyan/index.php?aa1=text')
+}
+
 export default {
     login,
     // checkLogin,
@@ -104,6 +124,10 @@ export default {
     listSchedule,
     getUserId,
     addSchedule,
+    getMingYan,
+    deleteSchedule
+
+
 
 
 }

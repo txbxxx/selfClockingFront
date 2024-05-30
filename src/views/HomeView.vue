@@ -15,13 +15,13 @@
           </el-aside>
           <el-main  :class="mainStyle" class="TaskPageMain">
             <el-row :gutter="10">
-              <el-col :span="7">
+              <el-col :span="5">
                   打卡区域
               </el-col>
-              <el-col :span="10">
-                任务区域
+              <el-col :span="13">
+                <TaskFiled />
               </el-col>
-              <el-col :span="7">
+              <el-col :span="6">
                 <Clock />
               </el-col>
             </el-row>
@@ -37,9 +37,8 @@
 // @ is an alias to /src
 import Menu from "../components/menu/Menu.vue";
 import Clock from "../components/clockTask/Clock.vue";
-import Logout from "../components/logout/Logout.vue";
+import TaskFiled  from "@/components/taskfiled/TaskFiled.vue";
 import {computed, ref} from 'vue'
-import UserFunc from "@/hooks";
 import {ArrowLeft, ArrowRight, Document, Location, Setting} from "@element-plus/icons-vue";
 
 // 侧边栏逻辑-折叠

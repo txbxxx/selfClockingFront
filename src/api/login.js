@@ -18,5 +18,8 @@ export const ListSchedule = '/findAllSchedule'
 //添加日程接口
 export const AddSchedule = '/addSchedule'
 
+//删除日程接口
+export const DeleteSchedule = '/deleteSchedule'
+
 //获取当前用户登录的id
 export const GetUserId = '/getLoginUser'

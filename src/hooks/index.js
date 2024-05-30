@@ -48,7 +48,6 @@ function UserFunc() {
             const res = await Login.logout().then((res) => {
                 if (res.code === 200) {
                     ElMessage.success('退出成功')
-                    console.log(res)
                     // 退出成功跳转
                     router.push('/login/loginFrom')
                     //退出后清除Token
@@ -77,7 +76,6 @@ function UserFunc() {
                 ElMessage.success('注册成功')
                 //注册成功跳转到login
                 router.push('/login/loginFrom')
-                console.log(res.data)
             }else{
                 console.log(res)
                 ElMessage.error("注册失败！")
@@ -98,7 +96,6 @@ function UserFunc() {
             const user = await Login.getUserId();
             if (!user) {
                 ElMessage.error("获取不到当前用户!!");
-                throw new Error("User not found");
             }
 
             // 查询用户日程
@@ -127,7 +124,6 @@ function UserFunc() {
         const res =  await Login.addSchedule(user,scheduleFiled,date).then((res)=>{
             if (res.code === 200 ){
                 ElMessage.success('添加成功')
-                console.log(res.data)
             }else{
                 console.log(res)
                 ElMessage.error("添加失败！")
@@ -139,6 +135,38 @@ function UserFunc() {
 
     }
 
+
+    //删除日程
+    async function UserSchedule_delete(scheduleFiled,date){
+        //获取用户
+        const user = await Login.getUserId();
+        if (!user) {
+            ElMessage.error("获取不到当前用户!!");
+        }
+        // 删除日程
+        const res =  await Login.deleteSchedule(user,scheduleFiled,date).then((res)=>{
+            if (res.code === 200 ){
+                ElMessage.success('删除成功')
+            }else{
+                console.log(res)
+                ElMessage.error("删除失败！")
+            }
+        })
+
+    }
+
+
+
+
+    //获取名人名言
+    async function User_getFamous(){
+        const res = await Login.getMingYan()
+            console.log(res)
+            return res
+    }
+
+
+
     return{
         User_login,
         CheckLogin,
@@ -146,6 +174,9 @@ function UserFunc() {
         User_register,
         UserSchedule_list,
         UserSchedule_add,
+        User_getFamous,
+        UserSchedule_delete,
+
 
     }
 
