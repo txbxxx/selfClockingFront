@@ -23,3 +23,13 @@ export const DeleteSchedule = '/deleteSchedule'
 
 //获取当前用户登录的id
 export const GetUserId = '/getLoginUser'
+
+
+//获取当前用户的任务列表
+export const ListTask = '/listUserTask'
+
+//修改任务内容
+export const UpdateTask = '/updateTask'
+
+//添加任务
+export const AddTask = '/addUserTask'

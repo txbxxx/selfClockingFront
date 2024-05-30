@@ -1,4 +1,5 @@
 <template>
+  <div class="ClockPage">
   <el-calendar>
     <template #date-cell="{ data }">
       <div :class="data.isSelected ? 'is-selected' : ''"  @click="dialogOpen(data.day)">
@@ -46,6 +47,7 @@
       <el-text class="mx-1" type="primary">{{ mingYan }}</el-text>
     </el-card>
   </div>
+  </div>
 </template>
 
 
@@ -54,6 +56,7 @@ import { ref} from 'vue'
 import UserFunc from "@/hooks";
 import {onMounted} from 'vue'
 import {CircleClose} from "@element-plus/icons-vue";
+import {ElMessage} from "element-plus";
 
 
 // 在页面加载时就获取数据
@@ -109,9 +112,8 @@ const getSchedule = () => {
 // 修改getDateItemTooltipContent函数以返回日程项数组
 const getDateItemTooltipContent = (day) => {
   // 获取所有该日的日程项
-  const items = getDateItems(day);
   // 直接返回这些日程项，稍后在模板中处理
-  return items;
+  return getDateItems(day);
 };;
 
 
@@ -143,7 +145,8 @@ const deleteScheduleByField = (scheduleFiled, date) => {
 const getMingYanFunc = () => {
   User_getFamous().then(res => {
     mingYan.value = res.data.replace(/<\/?p>/g, '')
-  })
+  }).catch(err => {
+      })
 }
 
 </script>
@@ -152,6 +155,11 @@ const getMingYanFunc = () => {
 <style>
 .is-selected {
   color: #1989fa;
+}
+
+.ClockPage{
+  border-radius: 37px;
+  box-shadow: var(--el-box-shadow-lighter);
 }
 
 .center-Page .el-calendar-table .el-calendar-day {

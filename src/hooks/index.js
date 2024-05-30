@@ -16,7 +16,6 @@ function UserFunc() {
                 ElMessage.success('登录成功')
                 // 登录成功跳转
                 router.push('/home')
-                console.log(res.data)
                 //登录后存储Token
                 store.commit('getSaToken',res.data)
             }else{
@@ -34,7 +33,6 @@ function UserFunc() {
     //检查用户是否登录
     function CheckLogin(){
         const item = sessionStorage.getItem('token');
-        console.log(item)
         return item != null
     }
 
@@ -160,12 +158,72 @@ function UserFunc() {
 
     //获取名人名言
     async function User_getFamous(){
-        const res = await Login.getMingYan()
-            console.log(res)
-            return res
+        try {
+            return await Login.getMingYan().catch(err=>{
+                ElMessage.error('获取每日一句失败,请联系管理员(可忽略)')})
+        }catch (err){
+            ElMessage.error('获取每日一句失败,请联系管理员(可忽略)')
+        }
+
     }
 
 
+    //获取任务列表
+    async function User_getTaskList(){
+        try {
+            // 查询用户日程
+            const res = await Login.getTaskList();
+            if (res.code === 200) {
+                return res.data; // 直接返回数组数据
+            } else {
+                ElMessage.error(res);
+            }
+        } catch (err) {
+            console.error(err);
+            ElMessage.error('查询失败,请联系管理员');
+        }
+    }
+
+
+    //修改任务字段
+    async function UserSchedule_update(taskName,taskFiled){
+        //获取用户
+        const user = await Login.getUserId();
+        if (!user) {
+            ElMessage.error("获取不到当前用户!!");
+        }
+        // 修改日程
+        const res =  await Login.updateTask(taskName,taskFiled).then((res)=>{
+            if (res.code === 200 ){
+                ElMessage.success('修改成功')
+            }else{
+                console.log(res)
+                ElMessage.error("修改失败！")
+            }
+        }).catch(err=>{
+            console.log(err)
+            ElMessage.error('修改失败,请联系管理员')
+        })
+
+    }
+
+
+    //添加任务
+    async function UserSchedule_addTask(taskName,taskFiled,date){
+        // 添加任务
+        const res =  await Login.addTask(taskName,taskFiled).then((res)=>{
+            if (res.code === 200 ){
+                ElMessage.success('添加成功')
+            }else{
+                console.log(res)
+                ElMessage.error("添加失败！")
+            }
+        }).catch(err=>{
+            console.log(err)
+            ElMessage.error('添加失败,请联系管理员')
+        })
+
+    }
 
     return{
         User_login,
@@ -176,9 +234,19 @@ function UserFunc() {
         UserSchedule_add,
         User_getFamous,
         UserSchedule_delete,
+        User_getTaskList,
+        UserSchedule_update,
+        UserSchedule_addTask
 
 
     }
 
 }
+
+//任务操作
+function TaskFunc() {
+
+}
+
 export default UserFunc
+

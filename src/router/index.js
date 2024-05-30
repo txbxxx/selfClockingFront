@@ -75,16 +75,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     // 判断该路由是否需要登录权限
     if( !CheckLogin() && to.meta.requiredAuth) {
-      console.log(to.meta.requiredAuth)
-      console.log(CheckLogin())
       next({
         path: '/login/loginFrom',
         // query: {redirect: to.fullPath}
       })
     } else {
-      console.log(CheckLogin())
-      console.log(to.meta.requiredAuth)
-      console.log(to.path)
       next()
     }
 })

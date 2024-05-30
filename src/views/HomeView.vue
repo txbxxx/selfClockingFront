@@ -15,13 +15,13 @@
           </el-aside>
           <el-main  :class="mainStyle" class="TaskPageMain">
             <el-row :gutter="10">
-              <el-col :span="5">
+              <el-col :span="7">
                   打卡区域
               </el-col>
-              <el-col :span="13">
+              <el-col :span="10">
                 <TaskFiled />
               </el-col>
-              <el-col :span="6">
+              <el-col :span="7">
                 <Clock />
               </el-col>
             </el-row>

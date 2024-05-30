@@ -18,14 +18,6 @@ function login(user,pwd){
     })
 }
 
-//检查用户是否登录
-// function checkLogin(){
-//     return request({
-//         url: api.Demo.checkLogin,
-//         method: 'get',
-//     })
-// }
-
 
 //用户注册
 function register(user,pwd){
@@ -116,6 +108,40 @@ function getMingYan(){
     return axios.get('https://v.api.aa1.cn/api/api-wenan-mingrenmingyan/index.php?aa1=text')
 }
 
+
+// 获取任务列表
+export function getTaskList() {
+    return request({
+        url: api.Demo.ListTask,
+        method: 'get',
+    })
+}
+
+// 修改任务字段
+export function updateTask(taskName,taskFiled){
+    return request({
+        url: api.Demo.UpdateTask,
+        method: 'put',
+        data: {
+            taskname: taskName,
+            taskstr: taskFiled,
+        }
+    })
+}
+
+
+//添加任务字段
+export function addTask(taskName,taskFiled){
+    return request({
+        url: api.Demo.AddTask,
+        method: 'post',
+        data: {
+            taskname: taskName,
+            taskstr: taskFiled,
+        }
+    })
+}
+
 export default {
     login,
     // checkLogin,
@@ -125,9 +151,8 @@ export default {
     getUserId,
     addSchedule,
     getMingYan,
-    deleteSchedule
-
-
-
-
+    deleteSchedule,
+    getTaskList,
+    updateTask,
+    addTask,
 }
