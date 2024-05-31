@@ -8,8 +8,6 @@
             :collapse="props.isCollapse"
 
             style="height: 100%;"
-            @open="handleOpen"
-            @close="handleClose"
             @select="handleSelect"
         >
           <!--头像-->
@@ -24,37 +22,25 @@
 
           <el-divider></el-divider>
 
-          <h5 class="mb-2">欢迎</h5>
+          <h5 class="mb-3">欢迎</h5>
 
-          <el-sub-menu index="1">
-            <template #title>
-              <el-icon><location /></el-icon>
-              <span>首页</span>
-            </template>
-            <el-menu-item-group title="Group One">
-              <el-menu-item index="1-1">item one</el-menu-item>
-              <el-menu-item index="1-2">item two</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group title="Group Two">
-              <el-menu-item index="1-3">item three</el-menu-item>
-            </el-menu-item-group>
-            <el-sub-menu index="1-4">
-              <template #title>item four</template>
-              <el-menu-item index="1-4-1">item one</el-menu-item>
-            </el-sub-menu>
-          </el-sub-menu>
 
           <el-menu-item index="2">
+              <el-icon><location /></el-icon>
+              <span style="margin-left: 30px">Navigator One</span>
+          </el-menu-item>
+
+          <el-menu-item index="3">
             <el-icon><icon-menu /></el-icon>
-            <span>任务表</span>
+            <span style="margin-left: 30px" >任务表</span>
           </el-menu-item>
-          <el-menu-item index="3" disabled>
+          <el-menu-item index="4" >
             <el-icon><document /></el-icon>
-            <span>Navigator Three</span>
+            <span style="margin-left: 30px">Navigator Three</span>
           </el-menu-item>
-          <el-menu-item index="4">
+          <el-menu-item index="5 ">
             <el-icon><setting /></el-icon>
-            <span>Navigator Four</span>
+            <span style="margin-left: 30px">Navigator Four</span>
           </el-menu-item>
         </el-menu>
     </el-col>
@@ -91,5 +77,19 @@ const handleSelect = (key, keyPath) => {
 
 
 <style>
+.el-menu.el-menu-demo:not(.el-menu--collapse) {
+  border-bottom: none;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+  width: 200px;
+
+}
+
+
+.el-sub-menu__icon-arrow{
+  display: none  !important;
+}
+
 
 </style>

@@ -240,6 +240,20 @@ function UserFunc() {
         })
     }
 
+
+    //列出所有未完成的倒计时
+    async function UserSchedule_listUnFinish() {
+            // 查询用户日程
+            const res = await Login.listCountDownFalse()
+            if (res.code === 200) {
+                console.log(res.data)
+                return res.data; // 直接返回数组数据
+            } else {
+                ElMessage.error(res);
+            }
+
+    }
+
     return{
         User_login,
         CheckLogin,
@@ -253,6 +267,7 @@ function UserFunc() {
         UserSchedule_update,
         UserSchedule_addTask,
         UserTask_delete,
+        UserSchedule_listUnFinish,
     }
     
 

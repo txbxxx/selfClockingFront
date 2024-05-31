@@ -2,8 +2,9 @@
   <div class="center-Page">
     <el-container>
       <el-container  >
+        <transition name="slide">
           <el-aside    :width="isCollapse?'70px':'200px'"  style="height: 100%;"  class="TaskPageAside">
-            <el-space direction="vertical" :size="250 " >
+            <el-space direction="vertical" :size="200 " >
 
               <Menu :isCollapse="isCollapse"  />
 
@@ -13,10 +14,11 @@
               </div>
             </el-space>
           </el-aside>
+        </transition>
           <el-main  :class="mainStyle" class="TaskPageMain">
             <el-row :gutter="10">
               <el-col :span="7">
-                  打卡区域
+                  <SelfClock />
               </el-col>
               <el-col :span="10">
                 <TaskFiled />
@@ -38,6 +40,7 @@
 import Menu from "../components/menu/Menu.vue";
 import Clock from "../components/clockTask/Clock.vue";
 import TaskFiled  from "@/components/taskfiled/TaskFiled.vue";
+import SelfClock  from "@/components/taskCard/SelfClock.vue";
 import {computed, ref} from 'vue'
 import {ArrowLeft, ArrowRight, Document, Location, Setting} from "@element-plus/icons-vue";
 
@@ -48,7 +51,7 @@ const isCollapse = ref(true)
 // 动态计算 main 的宽度calc作用是适应宽度
 const mainStyle = computed(() => {
   return {
-    width: isCollapse.value ? 'calc(100% - 70px)' : 'calc(100% - 200px)',
+    width: isCollapse.value ? 'calc(100% - 50px)' : 'calc(100% - 200px)',
   };
 });
 
@@ -83,23 +86,16 @@ const toggleCollapse = () => {
 
 
 
-.el-menu.el-menu-demo:not(.el-menu--collapse) {
-  border-bottom: none;
+
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: width 0.3s;
 }
 
-.el-menu-vertical-demo:not(.el-menu--collapse) {
-  width: 200px;
-  min-height: 400px;
-}
-
-//
-.el-sub-menu__icon-arrow{
-  display: none  !important;
-}
-
-
-.el-main {
-
+.slide-enter-from,
+.slide-leave-to {
+  width: 70px;
 }
 
 

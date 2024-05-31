@@ -27,10 +27,11 @@
         </div>
       </template>
     </el-dialog>
-
+    <!--分页-->
+<!--任务表-->
     <el-table
         ref="multipleTableRef"
-        :data="taskList"
+        :data="paginatedData"
         style="width: 100%"
 
     >
@@ -60,6 +61,7 @@
           </el-checkbox>
         </template>
       </el-table-column>
+
       <el-table-column  label="任务内容"  >
         <template #default="scope">
           <el-input
@@ -70,7 +72,14 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <!-- 分页 -->
+    <el-pagination
+        v-model:current-page="currentPage"
+        :page-size="pageSize"
+        :total="totalItems"
+        layout="prev, pager, next, jumper"
+        @current-change="handleCurrentChange"
+    />
 
     <!-- 添加确认对话框 -->
     <el-dialog
@@ -89,18 +98,25 @@
     </el-dialog>
   </div>
 
-  <div class="example-pagination-block">
-    <el-pagination layout="prev, pager, next" :total="50" />
-  </div>
+
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, computed} from 'vue';
 import UserFunc from '@/hooks';
 import { ElMessage } from 'element-plus';
 import {CircleClose} from "@element-plus/icons-vue";
 const { User_getTaskList,UserSchedule_update,UserSchedule_addTask,UserTask_delete } = UserFunc();
 const taskList = ref([]);
+
+
+//分页初始数据
+// 初始状态
+const currentPage = ref(1);
+const pageSize = ref(5);
+const totalItems = ref(0);
+
+
 
 onMounted(() => {
   getTaskList();
@@ -137,6 +153,7 @@ const getTaskList = async () => {
         selected: false, // 初始化时，所有任务未选中
         content: '' // 初始化时，所有任务内容为空
       }));
+      totalItems.value = taskList.value.length;
     } else {
       console.log("没有任务列表");
     }
@@ -204,6 +221,24 @@ const deleteTask = async (task) => {
   }
 };
 
+
+//分页
+
+
+// 计算属性，获取当前页的数据
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = currentPage.value * pageSize.value;
+  return taskList.value.slice(start, end);
+});
+
+// 分页变化处理函数
+const handleCurrentChange = (newPage) => {
+  currentPage.value = newPage;
+};
+
+
+
 </script>
 
 <style >
@@ -214,7 +249,7 @@ const deleteTask = async (task) => {
 
 .task-manager {
   //background-color: ;
-  border-radius: 30px;
+  border-radius: 37px;
   box-shadow: var(--el-box-shadow-lighter);
   position: relative; /* 为了z-index生效 */
   z-index: 1; /* 确保在可能的其他元素之上 */
@@ -232,7 +267,7 @@ const deleteTask = async (task) => {
 /* 标题字体*/
 .task-field {
   background-color: #f5f5f5; /* 浅色背景 */
-  padding: 20px; /* 内边距 */
+  padding: 7px; /* 内边距 */
   text-align: center; /* 文本居中 */
 }
 
@@ -253,11 +288,24 @@ const deleteTask = async (task) => {
 }
 
 
-/*分页符*/
-.example-pagination-block + .example-pagination-block {
-  margin-top: 10px;
+
+/* 分页组件美化 */
+.el-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }
-.example-pagination-block .example-demonstration {
-  margin-bottom: 16px;
+.el-pager li {
+  cursor: pointer;
+  margin: 0 5px;
+}
+.el-pager .active {
+  font-weight: bold;
+  color: #409eff;
+}
+
+/* 弹窗动画 */
+.el-dialog__wrapper {
+  transition: all .3s ease-in-out;
 }
 </style>

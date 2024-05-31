@@ -42,17 +42,18 @@
       </div>
     </template>
   </el-dialog>
-  <div class="word">
-    <el-card header="每日一句">
-      <el-text class="mx-1" type="primary">{{ mingYan }}</el-text>
-    </el-card>
-  </div>
+    <div class="word">
+      <el-card header="每日一句">
+        <p class="typing-effect" ref="typingText">{{ displayedMingYan }}</p>
+        <span class="cursor-blink" v-if="isTyping"></span>
+      </el-card>
+    </div>
   </div>
 </template>
 
 
 <script setup>
-import { ref} from 'vue'
+import {nextTick, onBeforeUnmount, ref} from 'vue'
 import UserFunc from "@/hooks";
 import {onMounted} from 'vue'
 import {CircleClose} from "@element-plus/icons-vue";
@@ -60,7 +61,8 @@ import {ElMessage} from "element-plus";
 
 
 // 在页面加载时就获取数据
-onMounted(() => {
+onMounted(async () => {
+  await nextTick();
   getSchedule()
   getMingYanFunc()
 })
@@ -114,7 +116,7 @@ const getDateItemTooltipContent = (day) => {
   // 获取所有该日的日程项
   // 直接返回这些日程项，稍后在模板中处理
   return getDateItems(day);
-};;
+};
 
 
 //保存表单
@@ -144,11 +146,37 @@ const deleteScheduleByField = (scheduleFiled, date) => {
 //获取名人名言
 const getMingYanFunc = () => {
   User_getFamous().then(res => {
+    // 去除html标签
     mingYan.value = res.data.replace(/<\/?p>/g, '')
+    //启动打字机
+    startTyping();
   }).catch(err => {
       })
 }
 
+
+//打字机效果
+
+const typingText = ref(null);
+const isTyping = ref(true);
+const currentIndex = ref(0);
+const displayedMingYan = ref('');
+
+const startTyping = () => {
+  const interval = setInterval(() => {
+    if (currentIndex.value < mingYan.value.length) {
+      displayedMingYan.value += mingYan.value[currentIndex.value];
+      currentIndex.value++;
+    } else {
+      isTyping.value = false;
+      clearInterval(interval);
+    }
+  }, 100);
+};
+
+onBeforeUnmount(() => {
+  isTyping.value = false;
+});
 </script>
 
 
@@ -157,7 +185,7 @@ const getMingYanFunc = () => {
   color: #1989fa;
 }
 
-.ClockPage{
+.ClockPage {
   border-radius: 37px;
   box-shadow: var(--el-box-shadow-lighter);
 }
@@ -188,4 +216,40 @@ const getMingYanFunc = () => {
   position: absolute;
 }
 
+/*名人名言*/
+.cursor-blink {
+  animation: blink 1s linear infinite;
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background-color: black;
+  margin-left: 2px;
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+
+.el-card__header {
+  font-size: 10px; /* 根据需要调整字体大小 */
+  color: #333; /* 字体颜色，可以根据设计调整 */
+  font-weight: bold; /* 加粗，可选 */
+  padding: 5px 10px; /* 内边距调整，让标题看起来更舒适 */
+  background-color: rgba(245, 245, 250, 0.1); /* 浅色背景，提升层次感，颜色可自定义 */
+  border-radius: 30px 30px 0 0; /* 只在头部添加圆角，与卡片底部区分 */
+  margin-bottom: -10px; /* 负外边距，使内容紧密贴合头部，避免出现空白 */
+}
+
+/* 如果需要，也可以专门针对typing-effect和cursor-blink进行微调 */
+.typing-effect {
+  font-family: '微软雅黑', Arial, sans-serif; /* 更换字体 */
+  font-size: 16px; /* 内容字体大小 */
+  color: #606c89; /* 内容颜色 */
+}
 </style>

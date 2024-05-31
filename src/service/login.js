@@ -2,7 +2,7 @@ import { request } from '../untils/'
 import { mapMutations } from 'vuex'
 import api from '../api'
 import * as Demo from "@/api/login";
-import {GetUserId, ListSchedule} from "@/api/login";
+import {GetUserId, ListCountDownOverFalse, ListSchedule} from "@/api/login";
 import axios from "axios";
 
 
@@ -155,6 +155,15 @@ export function deleteTask(taskName){
     })
 }
 
+
+//列出所有未完成的倒计时
+function listCountDownFalse(){
+    return request({
+        url: api.Demo.ListCountDownOverFalse,
+        method: 'get',
+    })
+}
+
 export default {
     login,
     // checkLogin,
@@ -168,5 +177,6 @@ export default {
     getTaskList,
     updateTask,
     addTask,
-    deleteTask
+    deleteTask,
+    listCountDownFalse
 }
