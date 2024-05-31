@@ -142,6 +142,19 @@ export function addTask(taskName,taskFiled){
     })
 }
 
+
+
+//删除用户字段
+export function deleteTask(taskName){
+    return request({
+        url: api.Demo.DeleteTask,
+        method: 'delete',
+        data: {
+            taskname: taskName,
+        }
+    })
+}
+
 export default {
     login,
     // checkLogin,
@@ -155,4 +168,5 @@ export default {
     getTaskList,
     updateTask,
     addTask,
+    deleteTask
 }

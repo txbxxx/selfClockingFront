@@ -33,3 +33,6 @@ export const UpdateTask = '/updateTask'
 
 //添加任务
 export const AddTask = '/addUserTask'
+
+//删除任务
+export const DeleteTask = '/deleteUserTask'

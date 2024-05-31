@@ -10,7 +10,7 @@
     </div>
 
     <el-dialog v-model="dialogFormVisible" title="Shipping address" width="500">
-      <el-form :model="form">
+      <el-form  >
         <el-form-item label="任务名" :label-width="formLabelWidth">
           <el-input v-model="taskData.taskName" autocomplete="off" />
         </el-form-item>
@@ -43,7 +43,20 @@
               class="custom-checkbox"
               @change="onTaskSelectChange(scope.row)"
           >
-            <div class="task-name-cell" :class="{ 'completed': scope.row.selected }">{{ scope.row.taskName }}</div>
+            <el-tooltip
+                class="box-item"
+                effect="dark"
+                content="删除此日程"
+                placement="top-start"
+            >
+              <template #content>
+                <el-button size="small" type="text" @click="deleteTask(scope.row.taskName)">
+                  删除日程<el-icon><CircleClose /></el-icon>
+                </el-button>
+              </template>
+              <div class="task-name-cell" :class="{ 'completed': scope.row.selected }">{{ scope.row.taskName }}</div>
+
+            </el-tooltip>
           </el-checkbox>
         </template>
       </el-table-column>
@@ -75,13 +88,18 @@
       </template>
     </el-dialog>
   </div>
+
+  <div class="example-pagination-block">
+    <el-pagination layout="prev, pager, next" :total="50" />
+  </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import UserFunc from '@/hooks';
 import { ElMessage } from 'element-plus';
-const { User_getTaskList,UserSchedule_update,UserSchedule_addTask } = UserFunc();
+import {CircleClose} from "@element-plus/icons-vue";
+const { User_getTaskList,UserSchedule_update,UserSchedule_addTask,UserTask_delete } = UserFunc();
 const taskList = ref([]);
 
 onMounted(() => {
@@ -132,7 +150,6 @@ const getTaskList = async () => {
 const addTask = async () => {
   await UserSchedule_addTask(taskData.value.taskName,taskData.value.taskField).then((res) => {
     if (res) {
-      getTaskList();
       ElMessage.success('添加任务成功');
     } else {
       console.log("添加任务失败");
@@ -141,6 +158,7 @@ const addTask = async () => {
       // 无论成功还是错误关闭弹窗
       dialogFormVisible.value = false
   )
+  await getTaskList();
 };
 
 
@@ -172,6 +190,20 @@ const confirmAndUpdate = async () => {
     ElMessage.error('更新任务内容时出错');
   }
 };
+
+
+//删除日程
+const deleteTask = async (task) => {
+  try {
+    await UserTask_delete(task);
+    await getTaskList();
+    ElMessage.success('删除任务成功');
+  } catch (error) {
+    console.log(error)
+    ElMessage.error('删除任务失败');
+  }
+};
+
 </script>
 
 <style >
@@ -220,4 +252,12 @@ const confirmAndUpdate = async () => {
   margin-left: 0;
 }
 
+
+/*分页符*/
+.example-pagination-block + .example-pagination-block {
+  margin-top: 10px;
+}
+.example-pagination-block .example-demonstration {
+  margin-bottom: 16px;
+}
 </style>

@@ -134,6 +134,7 @@ function UserFunc() {
     }
 
 
+
     //删除日程
     async function UserSchedule_delete(scheduleFiled,date){
         //获取用户
@@ -225,6 +226,20 @@ function UserFunc() {
 
     }
 
+    //删除任务
+    async function UserTask_delete(taskName){
+        // 删除任务
+        const res =  await Login.deleteTask(taskName).then((res)=>{
+            if (res.code === 200 ){
+                console.log(res)
+                ElMessage.success('删除成功')
+            }else{
+                console.log(res)
+                ElMessage.error("删除失败！")
+            }
+        })
+    }
+
     return{
         User_login,
         CheckLogin,
@@ -236,10 +251,10 @@ function UserFunc() {
         UserSchedule_delete,
         User_getTaskList,
         UserSchedule_update,
-        UserSchedule_addTask
-
-
+        UserSchedule_addTask,
+        UserTask_delete,
     }
+    
 
 }
 
