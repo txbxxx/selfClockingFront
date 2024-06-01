@@ -164,6 +164,31 @@ function listCountDownFalse(){
     })
 }
 
+//添加倒计时
+function addCountDown(countdownName,countdownDay){
+    return request({
+        url: api.Demo.AddCountDown,
+        method: 'post',
+        data: {
+            countdownName: countdownName,
+            countdownDay: countdownDay
+        }
+    })
+}
+
+
+//删除倒计时
+function deleteCountDown(countdownName){
+    return request({
+        url: api.Demo.DeleteCountDown,
+        method: 'delete',
+        data: {
+            countdownName: countdownName,
+        }
+    })
+}
+
+
 export default {
     login,
     // checkLogin,
@@ -178,5 +203,7 @@ export default {
     updateTask,
     addTask,
     deleteTask,
-    listCountDownFalse
+    listCountDownFalse,
+    addCountDown,
+    deleteCountDown,
 }

@@ -3,7 +3,8 @@
     <el-col :span="12">
 
         <el-menu
-            default-active="activeIndex"
+            default-active="/home"
+            router="true"
             class="el-menu-vertical-demo"
             :collapse="props.isCollapse"
 
@@ -25,22 +26,14 @@
           <h5 class="mb-3">欢迎</h5>
 
 
-          <el-menu-item index="2">
-              <el-icon><location /></el-icon>
-              <span style="margin-left: 30px">Navigator One</span>
+          <el-menu-item index="/home" >
+            <el-icon><location /></el-icon>
+            <span style="margin-left: 30px">主页</span>
           </el-menu-item>
 
           <el-menu-item index="3">
-            <el-icon><icon-menu /></el-icon>
-            <span style="margin-left: 30px" >任务表</span>
-          </el-menu-item>
-          <el-menu-item index="4" >
-            <el-icon><document /></el-icon>
-            <span style="margin-left: 30px">Navigator Three</span>
-          </el-menu-item>
-          <el-menu-item index="5 ">
-            <el-icon><setting /></el-icon>
-            <span style="margin-left: 30px">Navigator Four</span>
+            <i class="fa fa-camera-retro"></i>
+            <span style="margin-left: 30px" >同桌</span>
           </el-menu-item>
         </el-menu>
     </el-col>
@@ -48,6 +41,7 @@
 </template>
 
 <script setup>
+import 'font-awesome/css/font-awesome.min.css'
 import {ArrowLeft, ArrowRight, Document, Location, Setting} from "@element-plus/icons-vue";
 import {computed, ref} from "vue";
 import UserFunc from "@/hooks";

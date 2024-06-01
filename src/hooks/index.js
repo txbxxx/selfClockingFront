@@ -242,7 +242,7 @@ function UserFunc() {
 
 
     //列出所有未完成的倒计时
-    async function UserSchedule_listUnFinish() {
+    async function UserCountdown_listUnFinish() {
             // 查询用户日程
             const res = await Login.listCountDownFalse()
             if (res.code === 200) {
@@ -252,6 +252,27 @@ function UserFunc() {
                 ElMessage.error(res);
             }
 
+    }
+
+    //添加倒计时
+    async function UserCountDown_Add(countdownName,countdownDay){
+        const res = await Login.addCountDown(countdownName,countdownDay)
+        if(res.code === 200){
+            ElMessage.success('添加成功')
+        }else{
+            ElMessage.error('添加失败,请联系管理员')
+        }
+    }
+
+
+    //删除倒计时
+    async function UserCountDown_delete(countdownName){
+        const res = await Login.deleteCountDown(countdownName)
+        if(res.code === 200){
+            ElMessage.success('删除成功')
+        }else{
+            ElMessage.error('删除失败,请联系管理员')
+        }
     }
 
     return{
@@ -267,7 +288,9 @@ function UserFunc() {
         UserSchedule_update,
         UserSchedule_addTask,
         UserTask_delete,
-        UserSchedule_listUnFinish,
+        UserCountdown_listUnFinish,
+        UserCountDown_Add,
+        UserCountDown_delete
     }
     
 

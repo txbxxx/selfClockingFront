@@ -40,3 +40,9 @@ export const DeleteTask = '/deleteUserTask'
 
 //列出用户未完成的倒计时
 export const ListCountDownOverFalse = '/listCountDownOverFalse'
+
+//添加倒计时
+export const AddCountDown = '/addCountDown'
+
+//删除倒计时
+export const DeleteCountDown = '/deleteCountDown'
