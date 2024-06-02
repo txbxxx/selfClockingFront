@@ -66,6 +66,7 @@ const toggleCollapse = () => {
 .center-Page{
   width: 100%;
   height: 97.5vh;
+  background-color: #eef4f9;
 }
 
 .TaskPageMain {
