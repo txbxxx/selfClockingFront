@@ -3,8 +3,23 @@
     <div class="task-field">
       <el-text class="task-title" size="large">任务表</el-text>
     </div>
-    <div style="display: flex; justify-content: flex-end;">
-      <el-button plain size="mini" @click="dialogFormVisible = true">
+    <div class="search-add-container">
+      <el-input
+          v-model="searchData"
+          type="text"
+          clearable
+          size="default"
+          placeholder="搜索任务"
+          :suffix-icon="Search"
+          class="search-input"
+          @change="searchTask($event)"
+      />
+      <el-button
+          plain
+          size="mini"
+          @click="dialogFormVisible = true"
+          class="add-button"
+      >
         添加任务
       </el-button>
     </div>
@@ -19,7 +34,6 @@
       <el-form
           ref="taskForm"
           :model="taskData"
-          :rules="rules"
           label-width="100px"
       >
         <el-form-item label="任务名" prop="taskName">
@@ -91,7 +105,7 @@
               </template>
               <div class="task-name-cell" :class="{ 'completed': scope.row.selected }">
                 <el-tag  size="small" round  :color="scope.row.color" />
-                {{ scope.row.taskName }}
+                <el-text>{{ scope.row.taskName }}</el-text>
               </div>
             </el-tooltip>
           </el-checkbox>
@@ -132,17 +146,71 @@
         </span>
       </template>
     </el-dialog>
+
+    <!--搜索弹窗-->
+    <el-drawer v-model="visible" :show-close="false">
+      <template #header="{ close, titleId, titleClass }">
+        <h4 :id="titleId" :class="titleClass">搜索的任务列表</h4>
+        <el-button type="danger" @click="close">
+          <el-icon class="el-icon--left"><CircleCloseFilled /></el-icon>
+          Close
+        </el-button>
+      </template>
+      <el-table
+          ref="multipleTableRef"
+          :data="searchValue"
+          style="width: 100%"
+
+      >
+        <el-table-column  label="任务名" width="120">
+          <template #default="scope">
+            <el-checkbox
+                :label="scope.row.taskName"
+                v-model="scope.row.selected"
+                size="large"
+                class="custom-checkbox"
+                @change="onTaskSelectChange(scope.row)"
+            >
+              <el-tooltip
+                  class="box-item"
+                  effect="dark"
+                  content="删除此任务"
+                  placement="top-start"
+              >
+                <template #content>
+                  <el-button size="small" type="text" @click="deleteTask(scope.row.taskName)">
+                    删除任务<el-icon><CircleClose /></el-icon>
+                  </el-button>
+                </template>
+                <div class="task-name-cell" :class="{ 'completed': scope.row.selected }">
+                  <el-tag  size="small" round  :color="scope.row.color" />
+                  {{ scope.row.taskName }}
+                </div>
+              </el-tooltip>
+            </el-checkbox>
+          </template>
+        </el-table-column>
+
+        <el-table-column  label="任务内容"  >
+          <template #default="scope">
+            <el-input
+                v-model="scope.row.taskField"
+                placeholder="请输入内容"
+                @keyup.enter="openConfirmDialog(scope.row)"
+            />
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-drawer>
   </div>
-
-
 </template>
 
 <script setup>
 import {ref, onMounted, computed} from 'vue';
 import UserFunc from '@/hooks';
 import { ElMessage } from 'element-plus';
-import {CircleClose} from "@element-plus/icons-vue";
-const { User_getTaskList,UserSchedule_update,UserSchedule_addTask,UserTask_delete } = UserFunc();
+import {CircleClose, CircleCloseFilled, Search} from "@element-plus/icons-vue";
+const { User_getTaskList,UserSchedule_update,UserSchedule_addTask,UserTask_delete,SearchTask,UpdateTaskStatus} = UserFunc();
 const taskList = ref([]);
 
 
@@ -169,14 +237,18 @@ const taskData = ref({
 const dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 
+
 const onTaskSelectChange = (item) => {
   // 选中或取消选中时的逻辑
   if (item.selected) {
-    // 选中时的处理
+    UpdateTaskStatus(item.taskName,1).then(()=>{
+      item.selected = true; // 选中状态
+    })
   } else {
     // 取消选中时的处理，例如清除内容或删除线
-    item.content = ''; // 清除输入内容
-    item.selected = false; // 取消选中状态
+    UpdateTaskStatus(item.taskName,0).then(()=>{
+      item.selected = false; // 选中状态
+    })
   }
 };
 
@@ -188,7 +260,6 @@ const getTaskList = async () => {
       taskList.value = res.map(item => ({
         ...item,
         selected: false, // 初始化时，所有任务未选中
-        content: '', // 初始化时，所有任务内容为空
         color: getColorByLevel(item.taskLevel)
       }));
       totalItems.value = taskList.value.length;
@@ -296,8 +367,34 @@ const deleteTask = async (task) => {
   }
 };
 
+//===================搜索任务=================
+//接收搜索的参数
+const searchData = ref('')
+const visible = ref(false)
+//接收搜索的变量
+const searchValue = ref([])
+// 搜索功能
+const searchTask = async (e) => {
+  // 在这里处理搜索逻辑
+  try {
+    const res = await SearchTask(e);
+    if(res.length === 0){
+      ElMessage.success("未查询到任务")
+      return null
+    }
+    searchValue.value = res.map(task => ({
+          ...task,
+          color: getColorByLevel(task.taskLevel) // 根据任务等级设置颜色
+        })
+    );
+    visible.value = true
+  } catch (error) {
+    console.error('搜索失败:', error);
+  }
+};
 
-//分页
+
+//==================分页=====================
 
 
 // 计算属性，获取当前页的数据
@@ -456,5 +553,57 @@ const handleCurrentChange = (newPage) => {
   .dialog-footer {
     flex-direction: column;
   }
+}
+
+
+.search-add-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  flex-grow: 1;
+  margin-right: 20px; /* 与添加按钮的间距 */
+}
+
+.add-button {
+  background-color: #409eff; /* 按钮背景色 */
+  color: white; /* 按钮文字颜色 */
+  border: none; /* 无边框 */
+  border-radius: 4px; /* 圆角边框 */
+  padding: 8px 15px; /* 内边距 */
+  font-size: 14px; /* 字体大小 */
+  transition: background-color 0.3s; /* 背景色变化的过渡效果 */
+}
+
+.add-button:hover {
+  background-color: #5cadff; /* 鼠标悬浮时的背景色 */
+}
+
+/*是否完成样式*/
+.completed {
+  position: relative;
+  color: #1e131d;
+  opacity: 0.6; /* 改变文本颜色使其变淡 */
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 2px;
+    background: linear-gradient(to right, #ff7e79, #ef82a0, #cda2ab);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    transform: translateY(-50%);
+  }
+
+  /* 增加文字阴影 */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 </style>

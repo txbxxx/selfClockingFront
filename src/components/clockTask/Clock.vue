@@ -105,6 +105,9 @@ const dialogOpen = (date) => {
 //获取日程数据
 const getSchedule = () => {
   UserSchedule_list().then(res => {
+    if (res === null){
+      return false;
+    }
     dateList.value = res
   })
 }

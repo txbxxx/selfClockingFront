@@ -1,4 +1,4 @@
-import Login, {getUserLearnDate, updateCountdownCard} from '../service/login'
+import Login, {getUserLearnDate, updateCountdownCard, updateTaskStatus} from '../service/login'
 import {ElMessage} from 'element-plus'
 import {useRouter} from 'vue-router'
 import {useStore} from "vuex";
@@ -90,23 +90,18 @@ function UserFunc() {
     //列出所有日程
     async function UserSchedule_list() {
         try {
-            // 获取当前用户登录的id
-            const user = await Login.getUserId();
-            if (!user) {
-                ElMessage.error("获取不到当前用户!!");
-            }
-
             // 查询用户日程
-            const res = await Login.listSchedule(user);
-
+            const res = await Login.listSchedule();
             if (res.code === 200) {
                 return res.data; // 直接返回数组数据
             } else {
                 ElMessage.error(res.data.message);
+                return  null;
             }
         } catch (err) {
             console.error(err);
             ElMessage.error('查询失败,请联系管理员');
+            return  null;
         }
     }
 
@@ -137,13 +132,8 @@ function UserFunc() {
 
     //删除日程
     async function UserSchedule_delete(scheduleFiled,date){
-        //获取用户
-        const user = await Login.getUserId();
-        if (!user) {
-            ElMessage.error("获取不到当前用户!!");
-        }
         // 删除日程
-        const res =  await Login.deleteSchedule(user,scheduleFiled,date).then((res)=>{
+        const res =  await Login.deleteSchedule(scheduleFiled,date).then((res)=>{
             if (res.code === 200 ){
                 ElMessage.success('删除成功')
             }else{
@@ -158,13 +148,8 @@ function UserFunc() {
 
 
     //获取名人名言
-    async function User_getFamous(){
-        try {
-            return await Login.getMingYan().catch(err=>{
-                ElMessage.error('获取每日一句失败,请联系管理员(可忽略)')})
-        }catch (err){
-            ElMessage.error('获取每日一句失败,请联系管理员(可忽略)')
-        }
+    async function User_getFamous() {
+        return await Login.getMingYan()
 
     }
 
@@ -188,11 +173,6 @@ function UserFunc() {
 
     //修改任务字段
     async function UserSchedule_update(taskName,taskFiled,taskLevel,oldtaskname){
-        //获取用户
-        const user = await Login.getUserId();
-        if (!user) {
-            ElMessage.error("获取不到当前用户!!");
-        }
         // 修改日程
         const res =  await Login.updateTask(taskName,taskFiled,taskLevel,oldtaskname).then((res)=>{
             if (res.code === 200 ){
@@ -228,7 +208,6 @@ function UserFunc() {
         // 删除任务
         const res =  await Login.deleteTask(taskName).then((res)=>{
             if (res.code === 200 ){
-                console.log(res)
                 ElMessage.success('删除成功')
             }else{
                 console.log(res)
@@ -243,7 +222,6 @@ function UserFunc() {
             // 查询用户日程
             const res = await Login.listCountDownFalse()
             if (res.code === 200) {
-                console.log(res.data)
                 return res.data; // 直接返回数组数据
             } else {
                 ElMessage.error(res);
@@ -276,7 +254,7 @@ function UserFunc() {
     async function UserCountdown_update() {
         let res = await updateCountdownCard();
         if (res.code === 200) {
-            ElMessage.success('更新倒计时成功')
+
         } else {
             ElMessage.error('更新倒计时失败')
         }
@@ -296,9 +274,27 @@ function UserFunc() {
     async function updateUserLearnData(learnTime) {
         const res = await Login.updateUserLearnDate(learnTime)
         if (res.code === 200) {
-            ElMessage.success('更新学习时间成功')
         } else {
             ElMessage.error('更新学习时间失败,请联系管理员')
+        }
+    }
+    
+    //搜索任务
+    async function SearchTask(taskfiled) {
+        const res = await  Login.searchTask(taskfiled)
+        if (res.code === 200){
+            return res.data
+        }else {
+            ElMessage.error("搜索失败")
+        }
+    }
+
+    async function UpdateTaskStatus(taskName,taskStatus){
+        const res = await Login.updateTaskStatus(taskName,taskStatus)
+        if (res.code === 200){
+            ElMessage.success('恭喜你你已经完成了任务！又变厉害了')
+        }else {
+            ElMessage.error('更新失败')
         }
     }
 
@@ -320,7 +316,9 @@ function UserFunc() {
         UserCountDown_delete,
         UserCountdown_update,
         getUserLearnData,
-        updateUserLearnData
+        updateUserLearnData,
+        SearchTask,
+        UpdateTaskStatus
     }
 
 

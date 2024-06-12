@@ -25,6 +25,7 @@ export const DeleteSchedule = '/deleteSchedule'
 export const GetUserId = '/getLoginUser'
 
 
+//=========================任务==========================
 //获取当前用户的任务列表
 export const ListTask = '/listUserTask'
 
@@ -36,6 +37,12 @@ export const AddTask = '/addUserTask'
 
 //删除任务
 export const DeleteTask = '/deleteUserTask'
+
+//搜索任务
+export const SearchTask = '/searchTask'
+
+//更新用户状态
+export const UpdateTaskStatus = '/updateTaskStatus'
 
 //=====================倒计时==================================
 

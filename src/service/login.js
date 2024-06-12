@@ -64,24 +64,20 @@ function getUserId(){
 
 
 //列出用户所有日程
-function listSchedule(user){
+function listSchedule(){
     return request({
         url: api.Demo.ListSchedule,
         method: 'get',
-        params: {
-            username: user
-        }
     })
 }
 
 
 // 用户添加日程
-function addSchedule(user,scheduleFiled,date){
+function addSchedule(scheduleFiled,date){
     return request({
         url: api.Demo.AddSchedule,
         method: 'post',
         data: {
-            username: user,
             scheduleFiled: scheduleFiled,
             date: date
         }
@@ -90,12 +86,11 @@ function addSchedule(user,scheduleFiled,date){
 
 
 //用户删除日程
-function deleteSchedule(user,scheduleFiled,date){
+function deleteSchedule(scheduleFiled,date){
     return request({
         url: api.Demo.DeleteSchedule,
         method: 'delete',
         data: {
-            username: user,
             scheduleFiled: scheduleFiled,
             date: date
         }
@@ -218,6 +213,29 @@ export async function updateUserLearnDate(date) {
     });
 }
 
+//搜索任务
+export async function searchTask(taskfiled) {
+    return request({
+        url: api.Demo.SearchTask,
+        method: "post",
+        data: {
+            taskfiled: taskfiled,
+        },
+    });
+}
+
+
+//更新用户状态
+export async  function updateTaskStatus(taskname,taskstatus){
+    return request({
+        url: api.Demo.UpdateTaskStatus,
+        method: "put",
+        data: {
+            taskname: taskname,
+            taskstatus: taskstatus
+        },
+    })
+}
 
 export default {
     login,
@@ -238,5 +256,7 @@ export default {
     deleteCountDown,
     updateCountdownCard,
     getUserLearnDate,
-    updateUserLearnDate
+    updateUserLearnDate,
+    searchTask,
+    updateTaskStatus
 }
