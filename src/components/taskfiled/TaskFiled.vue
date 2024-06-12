@@ -9,26 +9,60 @@
       </el-button>
     </div>
 
-    <el-dialog v-model="dialogFormVisible" title="Shipping address" width="500">
-      <el-form  >
-        <el-form-item label="任务名" :label-width="formLabelWidth">
+    <el-dialog
+        v-model="dialogFormVisible"
+        title="添加任务"
+        width="500"
+        custom-class="advanced-dialog"
+        :close-on-click-modal="false"
+    >
+      <el-form
+          ref="taskForm"
+          :model="taskData"
+          :rules="rules"
+          label-width="100px"
+      >
+        <el-form-item label="任务名" prop="taskName">
           <el-input v-model="taskData.taskName" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="任务内容" :label-width="formLabelWidth">
-          <el-input v-model="taskData.taskField" autocomplete="off" />
+        <el-form-item label="任务内容" prop="taskField">
+          <el-input
+              v-model="taskData.taskField"
+              type="textarea"
+              :rows="3"
+              autocomplete="off"
+          />
+        </el-form-item>
+        <el-form-item label="任务等级" prop="taskLevel">
+          <el-select
+              v-model="taskData.taskLevel"
+              placeholder="选择任务等级"
+          >
+            <el-option
+                v-for="item in range"
+                :key="item.value"
+                :label="item.text"
+                :value="item.value"
+            />
+          </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
         <div class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="addTask">
+          <el-button
+              type="primary"
+              @click="addTask"
+              :loading="loading"
+          >
             提交
           </el-button>
         </div>
       </template>
     </el-dialog>
-    <!--分页-->
-<!--任务表-->
+
+
+    <!--任务表-->
     <el-table
         ref="multipleTableRef"
         :data="paginatedData"
@@ -47,16 +81,18 @@
             <el-tooltip
                 class="box-item"
                 effect="dark"
-                content="删除此日程"
+                content="删除此任务"
                 placement="top-start"
             >
               <template #content>
                 <el-button size="small" type="text" @click="deleteTask(scope.row.taskName)">
-                  删除日程<el-icon><CircleClose /></el-icon>
+                  删除任务<el-icon><CircleClose /></el-icon>
                 </el-button>
               </template>
-              <div class="task-name-cell" :class="{ 'completed': scope.row.selected }">{{ scope.row.taskName }}</div>
-
+              <div class="task-name-cell" :class="{ 'completed': scope.row.selected }">
+                <el-tag  size="small" round  :color="scope.row.color" />
+                {{ scope.row.taskName }}
+              </div>
             </el-tooltip>
           </el-checkbox>
         </template>
@@ -126,6 +162,7 @@ onMounted(() => {
 const taskData = ref({
   taskName: '',
   taskField: '',
+  taskLevel: '',
 });
 
 //添加任务from是否弹出
@@ -151,7 +188,8 @@ const getTaskList = async () => {
       taskList.value = res.map(item => ({
         ...item,
         selected: false, // 初始化时，所有任务未选中
-        content: '' // 初始化时，所有任务内容为空
+        content: '', // 初始化时，所有任务内容为空
+        color: getColorByLevel(item.taskLevel)
       }));
       totalItems.value = taskList.value.length;
     } else {
@@ -162,15 +200,47 @@ const getTaskList = async () => {
   }
 };
 
+// 根据任务等级返回对应的颜色
+const getColorByLevel = (level) => {
+  switch (level) {
+    case 4:
+      return '#12a182'; // 绿色
+    case 3:
+      return '#d2b42c'; // 黄色
+    case 2:
+      return '#fba414'; // 橙色
+    case 1:
+      return '#ef82a0'; // 红色
+    default:
+      return '#CCCCCC'; // 默认灰色
+  }
+}
 
-//添加任务
+//======================添加任务==========================
+//select 默认选项
+const value = ref(1)
+// 任务等级
+const range = [
+  {
+    text: '重要且紧急',
+    value: 1
+  },
+  {
+    text: '重要不紧急',
+    value: 2
+  },
+  {
+    text: '紧急不重要',
+    value: 3
+  },
+  {
+    text: '不重要不紧急',
+    value: 4
+  }
+]
+
 const addTask = async () => {
-  await UserSchedule_addTask(taskData.value.taskName,taskData.value.taskField).then((res) => {
-    if (res) {
-      ElMessage.success('添加任务成功');
-    } else {
-      console.log("添加任务失败");
-    }
+  await UserSchedule_addTask(taskData.value.taskName,taskData.value.taskField,taskData.value.taskLevel).then((res) => {
   }).finally(
       // 无论成功还是错误关闭弹窗
       dialogFormVisible.value = false
@@ -178,6 +248,11 @@ const addTask = async () => {
   await getTaskList();
 };
 
+//任务等级
+const level = (e) => {
+  console.log(e)
+  taskData.value.taskLevel = e
+}
 
 //鼠标回车修改任务字段
 // 定义状态变量
@@ -199,7 +274,7 @@ const closeConfirmDialog = () => {
 const confirmAndUpdate = async () => {
   try {
     // 假设UserSchedule_update是一个异步方法，需要传递taskId和更新的字段
-    await UserSchedule_update(editingTask.value.taskName,editingTask.value.taskField);
+    await UserSchedule_update(editingTask.value.taskName,editingTask.value.taskField,editingTask.value.taskLevel,editingTask.value.taskName);
     await getTaskList(); // 更新任务列表
     closeConfirmDialog();
   } catch (error) {
@@ -241,71 +316,145 @@ const handleCurrentChange = (newPage) => {
 
 </script>
 
-<style >
-
-
-/* 动态调整输入框宽度 */
-
-
+<style lang="scss" scoped>
+// 全局和容器样式
 .task-manager {
-  //background-color: ;
-  border-radius: 37px;
-  box-shadow: var(--el-box-shadow-lighter);
-  position: relative; /* 为了z-index生效 */
-  z-index: 1; /* 确保在可能的其他元素之上 */
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-
-/* 添加删除线*/
-.completed {
-  text-decoration: line-through;
-}
-
-
-
-
-/* 标题字体*/
+// 任务标题样式
 .task-field {
-  background-color: #f5f5f5; /* 浅色背景 */
-  padding: 7px; /* 内边距 */
-  text-align: center; /* 文本居中 */
+  margin-bottom: 20px;
 }
-
 .task-title {
-  font-size: 24px; /* 更大的字体大小 */
-  color: #333; /* 深色文本颜色 */
-  font-weight: bold; /* 加粗文本 */
-  border-bottom: 2px solid #409eff; /* 下边框 */
-  padding-bottom: 10px; /* 下边框与文本之间的间距 */
-  margin-bottom: 20px; /* 标题与下面内容的间距 */
+  font-size: 1.5rem;
+  color: #333;
+  border-bottom: 2px solid #409eff;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
-
-/* 表*/
-.el-table tr{
-  padding-left: 0;
-  margin-left: 0;
-}
-
-
-
-/* 分页组件美化 */
-.el-pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-.el-pager li {
-  cursor: pointer;
-  margin: 0 5px;
-}
-.el-pager .active {
-  font-weight: bold;
+// 按钮样式
+.add-task-button {
+  margin-left: auto;
+  padding: 0.5rem 1rem;
+  border-color: #409eff;
   color: #409eff;
 }
 
+/* 弹窗自定义类 */
+.advanced-dialog {
+  border-radius: 10px; /* 圆角边框 */
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25); /* 轻微的阴影 */
+  background-color: #ffffff; /* 背景色 */
+  padding: 20px; /* 内边距 */
+}
+
+
+
+// 表格样式
+.table-styles {
+  th {
+    background-color: #f5f5f5;
+    color: #333;
+    font-weight: bold;
+  }
+  .task-name-cell {
+    display: flex;
+    align-items: center;
+  }
+}
+
+
+/* 表单项样式 */
+.el-form-item {
+  margin-bottom: 20px; /* 表单项之间的间距 */
+}
+
+
+/* 表单标题样式 */
+.el-dialog__title {
+  font-size: 1.5rem; /* 增大标题字体 */
+  color: #333;
+  margin-bottom: 1rem;
+  padding: 0;
+  border: none;
+}
+
+/* 输入框和选择器样式 */
+.el-input__inner,
+.el-textarea__inner,
+.el-select .el-input__inner {
+  border-radius: 8px; /* 圆角边框 */
+  border-color: #dcdfe6; /* 边框颜色 */
+  font-size: 1rem; /* 字体大小 */
+  padding: 10px 15px; /* 内边距 */
+}
+/* 选择器下拉菜单样式 */
+.el-select-dropdown__item {
+  padding: 10px 20px;
+  font-size: 1rem;
+}
+
+/* 按钮样式 */
+.dialog-footer .el-button {
+  border-radius: 8px; /* 圆角边框 */
+  padding: 10px 20px; /* 内边距 */
+  margin: 0 10px; /* 外边距 */
+}
+
+
 /* 弹窗动画 */
 .el-dialog__wrapper {
-  transition: all .3s ease-in-out;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s;
+}
+
+.el-dialog__wrapper.is-active {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.dialog-footer .el-button--primary {
+  background-color: #409eff; /* 主按钮背景色 */
+  color: #ffffff; /* 文字颜色 */
+}
+// 分页样式
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+
+  .el-pagination {
+    .btn-prev, .btn-next, .el-pager li {
+      background: #fff;
+      border-color: #dcdfe6;
+      color: #606266;
+    }
+    .btn-prev:hover, .btn-next:hover, .el-pager li:hover {
+      background: #f5f7fa;
+    }
+    .el-pager li.active {
+      background-color: #409eff;
+      border-color: #409eff;
+      color: #fff;
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .el-form-item__label {
+    text-align: left;
+    padding: 0;
+    margin-bottom: 5px;
+  }
+  .dialog-footer {
+    flex-direction: column;
+  }
 }
 </style>

@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus'; // 假设你使用Element Plus的提�
 
 // 创建axios实例
 const axioss = axios.create({
-    baseURL: "http://localhost:8081", // 应用的基本URL
+    baseURL: "http://192.168.31.193:8081", // 应用的基本URL
     timeout: 5000, // 请求超时时间
 });
 

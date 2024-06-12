@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
 </script>
 
 
-<style>
+<style lang="scss" >
 .is-selected {
   color: #1989fa;
 }

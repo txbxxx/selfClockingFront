@@ -2,7 +2,7 @@ import { request } from '../untils/'
 import { mapMutations } from 'vuex'
 import api from '../api'
 import * as Demo from "@/api/login";
-import {GetUserId, ListCountDownOverFalse, ListSchedule} from "@/api/login";
+import {GetUserId, GetUserLearnDate, ListCountDownOverFalse, ListSchedule, UpdateUserLearnDat} from "@/api/login";
 import axios from "axios";
 
 
@@ -118,26 +118,29 @@ export function getTaskList() {
 }
 
 // 修改任务字段
-export function updateTask(taskName,taskFiled){
+export function updateTask(taskName,taskFiled,taskLevel,oldtaskname){
     return request({
         url: api.Demo.UpdateTask,
         method: 'put',
         data: {
             taskname: taskName,
             taskstr: taskFiled,
+            tasklevel:taskLevel,
+            oldtaskname:oldtaskname
         }
     })
 }
 
 
 //添加任务字段
-export function addTask(taskName,taskFiled){
+export function addTask(taskName,taskFiled,taskLevel){
     return request({
         url: api.Demo.AddTask,
         method: 'post',
         data: {
             taskname: taskName,
             taskstr: taskFiled,
+            tasklevel:taskLevel
         }
     })
 }
@@ -188,6 +191,33 @@ function deleteCountDown(countdownName){
     })
 }
 
+//更新倒计时
+export async function updateCountdownCard() {
+    return request({
+        url: api.Demo.UpdateCountDownPastDay,
+        method: "get",
+    });
+}
+
+//获取学习时间
+export async function getUserLearnDate() {
+    return request({
+        url: api.Demo.GetUserLearnDate,
+        method: "get",
+    });
+}
+
+//更新用户学习时间
+export async function updateUserLearnDate(date) {
+    return request({
+        url: api.Demo.UpdateUserLearnDat,
+        method: "put",
+        data: {
+            learnDate: date,
+        },
+    });
+}
+
 
 export default {
     login,
@@ -206,4 +236,7 @@ export default {
     listCountDownFalse,
     addCountDown,
     deleteCountDown,
+    updateCountdownCard,
+    getUserLearnDate,
+    updateUserLearnDate
 }

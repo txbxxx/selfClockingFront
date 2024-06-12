@@ -37,6 +37,7 @@ export const AddTask = '/addUserTask'
 //删除任务
 export const DeleteTask = '/deleteUserTask'
 
+//=====================倒计时==================================
 
 //列出用户未完成的倒计时
 export const ListCountDownOverFalse = '/listCountDownOverFalse'
@@ -46,3 +47,29 @@ export const AddCountDown = '/addCountDown'
 
 //删除倒计时
 export const DeleteCountDown = '/deleteCountDown'
+
+//更新倒计时
+export const UpdateCountDownPastDay = '/updateCountDownPastDay'
+
+
+//=========================关系================================
+
+//查询是否有绑定关系
+export const JudgeRelationship = '/findRelationship'
+
+//绑定关系
+export const BindRelationship  = '/bindRelationship'
+
+//列出和当前用户绑定关系的用户
+export const ListRelationship = '/listRelationship'
+
+//删除关系
+export const DeleteRelationship = '/deleteRelation'
+
+//=============================学习时间========================
+
+//查询用户的学习时间
+export const GetUserLearnDate = '/getUserLearnDate'
+
+//更新用户的学习时间
+export const UpdateUserLearnDat = '/updateUserLearnDate'

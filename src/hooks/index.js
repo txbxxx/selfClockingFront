@@ -1,4 +1,4 @@
-import Login from '../service/login'
+import Login, {getUserLearnDate, updateCountdownCard} from '../service/login'
 import {ElMessage} from 'element-plus'
 import {useRouter} from 'vue-router'
 import {useStore} from "vuex";
@@ -187,14 +187,14 @@ function UserFunc() {
 
 
     //修改任务字段
-    async function UserSchedule_update(taskName,taskFiled){
+    async function UserSchedule_update(taskName,taskFiled,taskLevel,oldtaskname){
         //获取用户
         const user = await Login.getUserId();
         if (!user) {
             ElMessage.error("获取不到当前用户!!");
         }
         // 修改日程
-        const res =  await Login.updateTask(taskName,taskFiled).then((res)=>{
+        const res =  await Login.updateTask(taskName,taskFiled,taskLevel,oldtaskname).then((res)=>{
             if (res.code === 200 ){
                 ElMessage.success('修改成功')
             }else{
@@ -210,18 +210,15 @@ function UserFunc() {
 
 
     //添加任务
-    async function UserSchedule_addTask(taskName,taskFiled,date){
+    async function UserSchedule_addTask(taskName,taskFiled,taskLevel){
         // 添加任务
-        const res =  await Login.addTask(taskName,taskFiled).then((res)=>{
+        const res =  await Login.addTask(taskName,taskFiled,taskLevel).then((res)=>{
             if (res.code === 200 ){
                 ElMessage.success('添加成功')
             }else{
                 console.log(res)
                 ElMessage.error("添加失败！")
             }
-        }).catch(err=>{
-            console.log(err)
-            ElMessage.error('添加失败,请联系管理员')
         })
 
     }
@@ -275,6 +272,36 @@ function UserFunc() {
         }
     }
 
+    //更新倒计时日期
+    async function UserCountdown_update() {
+        let res = await updateCountdownCard();
+        if (res.code === 200) {
+            ElMessage.success('更新倒计时成功')
+        } else {
+            ElMessage.error('更新倒计时失败')
+        }
+    }
+
+    //获取用户学习时间
+    async function getUserLearnData() {
+        const res = await Login.getUserLearnDate()
+        if (res.code === 200) {
+            return res.data
+        } else {
+            ElMessage.error('获取学习时间失败,请联系管理员')
+        }
+    }
+
+    //更新用户学习时间
+    async function updateUserLearnData(learnTime) {
+        const res = await Login.updateUserLearnDate(learnTime)
+        if (res.code === 200) {
+            ElMessage.success('更新学习时间成功')
+        } else {
+            ElMessage.error('更新学习时间失败,请联系管理员')
+        }
+    }
+
     return{
         User_login,
         CheckLogin,
@@ -290,9 +317,12 @@ function UserFunc() {
         UserTask_delete,
         UserCountdown_listUnFinish,
         UserCountDown_Add,
-        UserCountDown_delete
+        UserCountDown_delete,
+        UserCountdown_update,
+        getUserLearnData,
+        updateUserLearnData
     }
-    
+
 
 }
 
