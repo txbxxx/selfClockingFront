@@ -107,14 +107,9 @@ function UserFunc() {
 
 
     //添加日程
-    async function UserSchedule_add(scheduleFiled,date){
-        //获取用户
-        const user = await Login.getUserId();
-        if (!user) {
-            ElMessage.error("获取不到当前用户!!");
-        }
+    async function UserSchedule_add(scheduleFiled,date,starTime,endTime,endDate){
         // 添加日程
-        const res =  await Login.addSchedule(user,scheduleFiled,date).then((res)=>{
+        const res =  await Login.addSchedule(scheduleFiled,date,starTime,endTime,endDate).then((res)=>{
             if (res.code === 200 ){
                 ElMessage.success('添加成功')
             }else{
@@ -145,6 +140,16 @@ function UserFunc() {
     }
 
 
+    //查询日程
+    async function UserSchedule_search(scheduleFiled){
+        // 查询日程
+        const res = await Login.searchSchedule(scheduleFiled)
+        if (res.code === 200 ){
+            return res.data
+        }else{
+            ElMessage.error("查询失败！")
+        }
+    }
 
 
     //获取名人名言
@@ -292,7 +297,7 @@ function UserFunc() {
     async function UpdateTaskStatus(taskName,taskStatus){
         const res = await Login.updateTaskStatus(taskName,taskStatus)
         if (res.code === 200){
-            ElMessage.success('恭喜你你已经完成了任务！又变厉害了')
+
         }else {
             ElMessage.error('更新失败')
         }
@@ -318,7 +323,8 @@ function UserFunc() {
         getUserLearnData,
         updateUserLearnData,
         SearchTask,
-        UpdateTaskStatus
+        UpdateTaskStatus,
+        UserSchedule_search
     }
 
 

@@ -73,13 +73,16 @@ function listSchedule(){
 
 
 // 用户添加日程
-function addSchedule(scheduleFiled,date){
+function addSchedule(scheduleFiled,date,starTime,endTime,endDate){
     return request({
         url: api.Demo.AddSchedule,
         method: 'post',
         data: {
             scheduleFiled: scheduleFiled,
-            date: date
+            date: date,
+            starTime:starTime,
+            endTime: endTime,
+            endDate:endDate
         }
     })
 }
@@ -97,6 +100,16 @@ function deleteSchedule(scheduleFiled,date){
     })
 }
 
+//搜索日程
+function searchSchedule(scheduleFiled){
+    return request({
+        url: api.Demo.SearchSchedule,
+        method: 'post',
+        data: {
+            scheduleFiled: scheduleFiled,
+        }
+    })
+}
 
 // 名人名言
 function getMingYan(){
@@ -258,5 +271,6 @@ export default {
     getUserLearnDate,
     updateUserLearnDate,
     searchTask,
-    updateTaskStatus
+    updateTaskStatus,
+    searchSchedule
 }

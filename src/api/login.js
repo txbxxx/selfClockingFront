@@ -11,6 +11,7 @@ export const Register = '/registerUser'
 //用户登出接口
 export const Logout = '/logoutUser'
 
+//======================日程=========================
 
 //列出用户所有日程
 export const ListSchedule = '/findAllSchedule'
@@ -24,6 +25,9 @@ export const DeleteSchedule = '/deleteSchedule'
 //获取当前用户登录的id
 export const GetUserId = '/getLoginUser'
 
+
+//搜索日程
+export const SearchSchedule = '/fuzzySchedule'
 
 //=========================任务==========================
 //获取当前用户的任务列表

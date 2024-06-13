@@ -7,7 +7,6 @@
             router="true"
             class="el-menu-vertical-demo"
             :collapse="props.isCollapse"
-
             style="height: 100%;"
             @select="handleSelect"
         >
@@ -25,18 +24,22 @@
 
           <h5 class="mb-3">欢迎</h5>
 
-
           <el-menu-item index="/home" >
+            <router-link to="/home">
             <el-icon><location /></el-icon>
             <span style="margin-left: 30px">主页</span>
+            </router-link>
           </el-menu-item>
 
-          <el-menu-item index="3">
+          <el-menu-item index="/">
+            <router-link to="/deskmate">
             <i class="fa fa-camera-retro"></i>
             <span style="margin-left: 30px" >同桌</span>
+            </router-link>
           </el-menu-item>
         </el-menu>
     </el-col>
+    <router-view></router-view>
   </el-row>
 </template>
 
@@ -46,7 +49,7 @@ import {ArrowLeft, ArrowRight, Document, Location, Setting} from "@element-plus/
 import {computed, ref} from "vue";
 import UserFunc from "@/hooks";
 
-const activeIndex = ref('1')
+const activeIndex = ref('/home')
 
 // 使用服务逻辑接口
 const { User_logout } = UserFunc()

@@ -242,6 +242,7 @@ const onTaskSelectChange = (item) => {
   // 选中或取消选中时的逻辑
   if (item.selected) {
     UpdateTaskStatus(item.taskName,1).then(()=>{
+      ElMessage.success("恭喜你又完成了任务")
       item.selected = true; // 选中状态
     })
   } else {
@@ -420,6 +421,7 @@ const handleCurrentChange = (newPage) => {
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
 // 任务标题样式

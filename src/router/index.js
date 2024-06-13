@@ -57,8 +57,7 @@ const routes = [
     meta: {
       requiredAuth: true
     }
-  }
-
+  },
 ]
 
 // createRouter创建路由实例，createWebHistory创建history模式
